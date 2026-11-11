@@ -1,0 +1,1090 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>สแตนเชียร์กีฬาโซนหุบเขา</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 18px;
+    font-family: Arial, sans-serif;
+    background: #f3f5f8;
+    color: #222;
+}
+
+.container {
+    width: 100%;
+    max-width: 1500px;
+    margin: auto;
+}
+
+/* HEADER */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 23px;
+}
+
+.login-button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #20242c;
+    color: white;
+    cursor: pointer;
+}
+
+/* PANELS */
+
+.panel {
+    background: white;
+    border: 1px solid #e7e9ed;
+    border-radius: 13px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+
+.section-description {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 15px;
+    margin-top: -7px;
+}
+
+/* SEARCH */
+
+.search {
+    width: 100%;
+    max-width: 350px;
+    padding: 11px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    outline: none;
+}
+
+/* STUDENT GRID */
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    padding: 5px 2px 14px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.student-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: max-content;
+    margin: auto;
+}
+
+.student-row {
+    display: grid;
+    grid-template-columns: repeat(24, 42px);
+    gap: 5px;
+}
+
+.student {
+    width: 42px;
+    height: 42px;
+    border: 1.4px solid #343a40;
+    border-radius: 6px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.student:hover {
+    background: #e7eef8;
+    transform: translateY(-2px);
+}
+
+.student.selected {
+    background: #dce9fa;
+    border-color: #386ba5;
+}
+
+.student.hidden {
+    display: none;
+}
+
+/* CONTROLLER GRID */
+
+.special-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.special-card {
+    min-height: 85px;
+    background: #fafbfc;
+    border: 1px solid #343a40;
+    border-radius: 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.special-card:hover {
+    background: #eaf0f8;
+    transform: translateY(-2px);
+}
+
+.special-number {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.special-name {
+    font-size: 11px;
+    color: #777;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+/* MODAL */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0,0,0,.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    width: 100%;
+    max-width: 410px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 15px;
+    padding: 23px;
+    transform: translateY(15px);
+    transition: .2s;
+}
+
+.overlay.active .modal {
+    transform: translateY(0);
+}
+
+.modal h2 {
+    margin: 0 0 7px;
+    font-size: 21px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.field input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+}
+
+.field input:focus {
+    border-color: #555;
+}
+
+.field input:disabled {
+    background: #f4f5f6;
+    color: #555;
+}
+
+.actions {
+    display: flex;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.primary {
+    background: #222;
+    color: white;
+}
+
+.secondary {
+    background: #eee;
+    color: #333;
+}
+
+.status {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 12px;
+}
+
+/* MOBILE */
+
+@media(max-width: 700px) {
+
+    body {
+        padding: 9px;
+    }
+
+    .header h2 {
+        font-size: 19px;
+    }
+
+    .panel {
+        padding: 11px;
+    }
+
+    .student-grid {
+        gap: 5px;
+    }
+
+    .student-row {
+        grid-template-columns: repeat(24, 34px);
+        gap: 4px;
+    }
+
+    .student {
+        width: 34px;
+        height: 34px;
+        font-size: 12px;
+        border-radius: 5px;
+    }
+
+    .special-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .special-card {
+        min-height: 75px;
+    }
+
+    .modal {
+        padding: 18px;
+    }
+}
+
+@media(max-width: 360px) {
+    .special-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h2>สแตนเชียร์กีฬาโซนหุบเขา</h2>
+
+        <button class="login-button"
+            id="loginButton"
+            onclick="openLogin()">
+            Login
+        </button>
+
+    </div>
+
+    <!-- STUDENT SECTION -->
+
+    <section class="panel">
+
+        <div class="section-title">
+            ข้อมูลนักเรียน
+        </div>
+
+        <input
+            class="search"
+            id="searchInput"
+            type="number"
+            min="1"
+            max="240"
+            placeholder="ค้นหาด้วยเลขที่นักเรียน">
+
+        <div class="table-scroll">
+            <div class="student-grid"
+                id="studentGrid">
+            </div>
+        </div>
+
+    </section>
+
+    <!-- CONTROLLER SECTION -->
+
+    <section class="panel">
+
+        <div class="section-title">
+            รายชื่อผู้คุมแถว
+        </div>
+
+        <div class="section-description">
+            
+        </div>
+
+        <div class="special-grid"
+            id="specialGrid">
+        </div>
+
+    </section>
+
+</div>
+
+<!-- DATA MODAL -->
+
+<div class="overlay" id="dataOverlay">
+
+    <div class="modal">
+
+        <h2 id="modalTitle">ข้อมูล</h2>
+
+        <div class="subtitle"
+            id="modalSubtitle">
+        </div>
+
+        <div id="formFields"></div>
+
+        <div class="actions">
+
+            <button class="secondary"
+                onclick="closeData()">
+                ปิด
+            </button>
+
+            <button class="primary"
+                id="saveButton"
+                onclick="saveData()">
+                บันทึก
+            </button>
+
+        </div>
+
+        <div class="status"
+            id="dataStatus">
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LOGIN MODAL -->
+
+<div class="overlay" id="loginOverlay">
+
+    <div class="modal">
+
+        <h2>เข้าสู่ระบบ</h2>
+
+        <div class="subtitle">
+            สำหรับผู้มีสิทธิ์แก้ไขข้อมูล
+        </div>
+
+        <div class="field">
+
+            <label>ชื่อผู้ใช้</label>
+
+            <input id="username"
+                placeholder="Username">
+
+        </div>
+
+        <div class="field">
+
+            <label>รหัสผ่าน</label>
+
+            <input id="password"
+                type="password"
+                placeholder="Password">
+
+        </div>
+
+        <div class="actions">
+
+            <button class="secondary"
+                onclick="closeLogin()">
+                ยกเลิก
+            </button>
+
+            <button class="primary"
+                onclick="login()">
+                เข้าสู่ระบบ
+            </button>
+
+        </div>
+
+        <div class="status"
+            id="loginStatus">
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+// =================================
+// CONFIGURATION
+// =================================
+
+const USERNAME = "Sataen Cheer";
+const PASSWORD = "Mvsataen Cheer";
+
+const TOTAL_STUDENTS = 240;
+const TOTAL_SPECIAL = 24;
+
+// =================================
+// LOAD DATA
+// =================================
+
+function loadData(key) {
+
+    try {
+
+        const data = JSON.parse(
+            localStorage.getItem(key) || "{}"
+        );
+
+        return data &&
+            typeof data === "object" &&
+            !Array.isArray(data)
+            ? data : {};
+
+    } catch {
+
+        return {};
+
+    }
+
+}
+
+let students = loadData("studentData");
+let specialData = loadData("specialData");
+
+let isLoggedIn = false;
+let currentType = "";
+let currentNumber = null;
+
+// =================================
+// SAVE STORAGE
+// =================================
+
+function saveStorage() {
+
+    try {
+
+        localStorage.setItem(
+            "studentData",
+            JSON.stringify(students)
+        );
+
+        localStorage.setItem(
+            "specialData",
+            JSON.stringify(specialData)
+        );
+
+        return true;
+
+    } catch {
+
+        alert("บันทึกข้อมูลไม่สำเร็จ");
+
+        return false;
+
+    }
+
+}
+
+// =================================
+// CREATE STUDENTS 1-240
+// =================================
+
+function createStudents() {
+
+    const grid =
+        document.getElementById("studentGrid");
+
+    grid.innerHTML = "";
+
+    // 10 ROWS
+
+    for (let row = 9; row >= 0; row--) {
+
+        const rowElement =
+            document.createElement("div");
+
+        rowElement.className = "student-row";
+
+        // 24 COLUMNS
+
+        for (let col = 0; col < 24; col++) {
+
+            const number =
+                row * 24 + col + 1;
+
+            const square =
+                document.createElement("div");
+
+            square.className = "student";
+
+            // DISPLAY STUDENT NUMBER
+
+            square.textContent = number;
+
+            square.dataset.number = number;
+
+            square.onclick = () => {
+
+                openData("student", number);
+
+            };
+
+            rowElement.appendChild(square);
+
+        }
+
+        grid.appendChild(rowElement);
+
+    }
+
+}
+
+// =================================
+// CREATE CONTROLLERS A-X
+// =================================
+
+function createSpecial() {
+
+    const grid =
+        document.getElementById("specialGrid");
+
+    grid.innerHTML = "";
+
+    for (let i = 1; i <= TOTAL_SPECIAL; i++) {
+
+        const letter =
+            String.fromCharCode(64 + i);
+
+        const data =
+            specialData[i] || {};
+
+        const card =
+            document.createElement("div");
+
+        card.className = "special-card";
+
+        const number =
+            document.createElement("div");
+
+        number.className = "special-number";
+
+        number.textContent = letter;
+
+        const name =
+            document.createElement("div");
+
+        name.className = "special-name";
+
+        name.textContent =
+            data.person1 || data.person2
+            ? (data.person1 || "") +
+              (data.person2
+                ? " / " + data.person2 : "")
+            : "เพิ่มข้อมูล";
+
+        card.appendChild(number);
+        card.appendChild(name);
+
+        card.onclick = () => {
+
+            openData("special", i);
+
+        };
+
+        grid.appendChild(card);
+
+    }
+
+}
+
+// =================================
+// CREATE FORM FIELD
+// =================================
+
+function makeField(
+    label,
+    key,
+    value,
+    disabled,
+    type = "text"
+) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className = "field";
+
+    const title =
+        document.createElement("label");
+
+    title.textContent = label;
+
+    const input =
+        document.createElement("input");
+
+    input.type = type;
+    input.dataset.key = key;
+    input.value = value ?? "";
+    input.disabled = disabled;
+    input.placeholder = "กรอก" + label;
+
+    wrapper.appendChild(title);
+    wrapper.appendChild(input);
+
+    return wrapper;
+
+}
+
+// =================================
+// OPEN STUDENT / CONTROLLER DATA
+// =================================
+
+function openData(type, number) {
+
+    currentType = type;
+    currentNumber = number;
+
+    const data =
+        type === "student"
+        ? students[number] || {}
+        : specialData[number] || {};
+
+    const fields =
+        document.getElementById("formFields");
+
+    fields.innerHTML = "";
+
+    const readOnly = !isLoggedIn;
+
+    document.getElementById("modalTitle")
+        .textContent =
+        type === "student"
+        ? "ข้อมูลนักเรียน"
+        : "ข้อมูลผู้คุมแถว";
+
+    if (type === "student") {
+
+        document.getElementById("modalSubtitle")
+            .textContent =
+            "เลขที่นักเรียน " + number;
+
+        // STUDENT NUMBER
+
+        fields.appendChild(makeField(
+            "เลขที่นักเรียน",
+            "studentNumber",
+            data.studentNumber ?? number,
+            readOnly,
+            "number"
+        ));
+
+        // NAME
+
+        fields.appendChild(makeField(
+            "ชื่อ - นามสกุล",
+            "name",
+            data.name,
+            readOnly
+        ));
+
+        // CLASS
+
+        fields.appendChild(makeField(
+            "ชั้นเรียน",
+            "class",
+            data.class,
+            readOnly
+        ));
+
+        // NICKNAME
+
+        fields.appendChild(makeField(
+            "ชื่อเล่น",
+            "nickname",
+            data.nickname,
+            readOnly
+        ));
+
+    } else {
+
+        const letter =
+            String.fromCharCode(64 + number);
+
+        document.getElementById("modalSubtitle")
+            .textContent =
+            "ผู้คุมแถว " + letter;
+
+        fields.appendChild(makeField(
+            "ชื่อบุคคลที่ 1",
+            "person1",
+            data.person1,
+            readOnly
+        ));
+
+        fields.appendChild(makeField(
+            "ชื่อบุคคลที่ 2",
+            "person2",
+            data.person2,
+            readOnly
+        ));
+
+        fields.appendChild(makeField(
+            "ชั้นเรียน",
+            "class",
+            data.class,
+            readOnly
+        ));
+
+        fields.appendChild(makeField(
+            "แถวที่ดูแล",
+            "managedRow",
+            data.managedRow,
+            readOnly
+        ));
+
+        fields.appendChild(makeField(
+            "ชื่อเล่น",
+            "nickname",
+            data.nickname,
+            readOnly
+        ));
+
+    }
+
+    document.getElementById("saveButton")
+        .hidden = !isLoggedIn;
+
+    document.getElementById("dataStatus")
+        .textContent =
+        isLoggedIn
+        ? "คุณสามารถแก้ไขข้อมูลได้"
+        : "เข้าสู่ระบบเพื่อแก้ไขข้อมูล";
+
+    document.getElementById("dataOverlay")
+        .classList.add("active");
+
+}
+
+// =================================
+// SAVE DATA
+// =================================
+
+function saveData() {
+
+    if (!isLoggedIn ||
+        currentNumber === null) return;
+
+    const fields =
+        document.querySelectorAll(
+            "#formFields input"
+        );
+
+    const data = {};
+
+    fields.forEach(input => {
+
+        data[input.dataset.key] =
+            input.value.trim();
+
+    });
+
+    if (currentType === "student") {
+
+        students[currentNumber] = data;
+
+    } else {
+
+        specialData[currentNumber] = data;
+
+    }
+
+    if (!saveStorage()) return;
+
+    createStudents();
+    createSpecial();
+
+    closeData();
+
+}
+
+// =================================
+// CLOSE DATA
+// =================================
+
+function closeData() {
+
+    document.getElementById("dataOverlay")
+        .classList.remove("active");
+
+    currentNumber = null;
+
+}
+
+// =================================
+// LOGIN
+// =================================
+
+function openLogin() {
+
+    document.getElementById("loginStatus")
+        .textContent = "";
+
+    document.getElementById("username")
+        .value = "";
+
+    document.getElementById("password")
+        .value = "";
+
+    document.getElementById("loginOverlay")
+        .classList.add("active");
+
+}
+
+function closeLogin() {
+
+    document.getElementById("loginOverlay")
+        .classList.remove("active");
+
+}
+
+function login() {
+
+    const user =
+        document.getElementById("username").value;
+
+    const pass =
+        document.getElementById("password").value;
+
+    if (
+        user === USERNAME &&
+        pass === PASSWORD
+    ) {
+
+        isLoggedIn = true;
+
+        const button =
+            document.getElementById("loginButton");
+
+        button.textContent = "Logout";
+        button.onclick = logout;
+
+        closeLogin();
+
+    } else {
+
+        document.getElementById("loginStatus")
+            .textContent =
+            "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+
+    }
+
+}
+
+// =================================
+// LOGOUT
+// =================================
+
+function logout() {
+
+    isLoggedIn = false;
+
+    const button =
+        document.getElementById("loginButton");
+
+    button.textContent = "Login";
+    button.onclick = openLogin;
+
+}
+
+// =================================
+// SEARCH STUDENT
+// =================================
+
+document.getElementById("searchInput")
+.addEventListener("input", function() {
+
+    const value = this.value.trim();
+
+    document.querySelectorAll(".student")
+    .forEach(square => {
+
+        const number =
+            square.dataset.number;
+
+        square.classList.toggle(
+            "hidden",
+            value !== "" && number !== value
+        );
+
+        square.classList.remove("selected");
+
+    });
+
+    if (value !== "") {
+
+        const number = Number(value);
+
+        if (
+            Number.isInteger(number) &&
+            number >= 1 &&
+            number <= TOTAL_STUDENTS
+        ) {
+
+            const target =
+                document.querySelector(
+                    '.student[data-number="' +
+                    number + '"]'
+                );
+
+            if (target) {
+
+                target.classList.add("selected");
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "center"
+                });
+
+            }
+
+        }
+
+    }
+
+});
+
+// =================================
+// CLOSE MODALS
+// =================================
+
+document.getElementById("dataOverlay")
+.addEventListener("click", e => {
+
+    if (e.target.id === "dataOverlay") {
+        closeData();
+    }
+
+});
+
+document.getElementById("loginOverlay")
+.addEventListener("click", e => {
+
+    if (e.target.id === "loginOverlay") {
+        closeLogin();
+    }
+
+});
+
+document.addEventListener("keydown", e => {
+
+    if (e.key === "Escape") {
+
+        closeData();
+        closeLogin();
+
+    }
+
+});
+
+document.getElementById("password")
+.addEventListener("keydown", e => {
+
+    if (e.key === "Enter") {
+        login();
+    }
+
+});
+
+// =================================
+// START WEBSITE
+// =================================
+
+createStudents();
+createSpecial();
+
+</script>
+
+</body>
+</html>
