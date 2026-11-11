@@ -104,7 +104,7 @@ body {
 
 .student-row {
     display: grid;
-    grid-template-columns: repeat(24, 42px);
+    grid-template-columns: 14px repeat(24, 42px) 14px;
     gap: 5px;
 }
 
@@ -285,6 +285,16 @@ body {
     margin-top: 12px;
 }
 
+.row-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c5cbd3;
+    font-size: 10px;
+    font-weight: 400;
+    user-select: none;
+}
+
 /* MOBILE */
 
 @media(max-width: 700px) {
@@ -306,7 +316,9 @@ body {
     }
 
     .student-row {
-        grid-template-columns: repeat(24, 34px);
+        width: max-content;
+        flex: 0 0 auto;
+        grid-template-columns: 12px repeat(24, 34px) 12px;
         gap: 4px;
     }
 
@@ -328,6 +340,16 @@ body {
 
     .modal {
         padding: 18px;
+    }
+
+    .row-letter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #cbd1d8;
+        font-size: 9px;
+        font-weight: 400;
+        user-select: none;
     }
 }
 
@@ -572,52 +594,50 @@ function saveStorage() {
 
 function createStudents() {
 
-    const grid =
-        document.getElementById("studentGrid");
+    const grid = document.getElementById("studentGrid");
 
     grid.innerHTML = "";
 
-    // 10 ROWS
-
+    // สร้างทั้งหมด 10 แถว
     for (let row = 9; row >= 0; row--) {
 
-        const rowElement =
-            document.createElement("div");
-
+        const rowElement = document.createElement("div");
         rowElement.className = "student-row";
 
-        // 24 COLUMNS
+        // ตัวอักษรด้านซ้าย A-J
+        const leftLabel = document.createElement("span");
+        leftLabel.className = "row-letter";
+        leftLabel.textContent = String.fromCharCode(65 + (9 - row));
 
+        rowElement.appendChild(leftLabel);
+
+        // สร้างช่องนักเรียน 24 ช่อง
         for (let col = 0; col < 24; col++) {
 
-            const number =
-                row * 24 + col + 1;
+            const number = row * 24 + col + 1;
 
-            const square =
-                document.createElement("div");
+            const square = document.createElement("div");
 
             square.className = "student";
-
-            // DISPLAY STUDENT NUMBER
-
             square.textContent = number;
-
             square.dataset.number = number;
 
             square.onclick = () => {
-
                 openData("student", number);
-
             };
 
             rowElement.appendChild(square);
-
         }
 
+        // ตัวอักษรด้านขวา K-T
+        const rightLabel = document.createElement("span");
+        rightLabel.className = "row-letter";
+        rightLabel.textContent = String.fromCharCode(75 + (9 - row));
+
+        rowElement.appendChild(rightLabel);
+
         grid.appendChild(rowElement);
-
     }
-
 }
 
 // =================================
