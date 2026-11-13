@@ -97,15 +97,36 @@ body {
 .student-grid {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
     width: max-content;
-    margin: auto;
+    min-width: max-content;
+    margin: 0;
+}
+
+.column-letters {
+    display: grid;
+    grid-template-columns: 14px repeat(24, 42px) 14px;
+    gap: 5px;
+    width: max-content;
 }
 
 .student-row {
     display: grid;
-    grid-template-columns: 14px repeat(24, 42px) 14px;
+    grid-template-columns: repeat(24, 42px);
     gap: 5px;
+    width: max-content;
+    flex: 0 0 auto;
+}
+
+.row-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c5cbd3;
+    font-size: 10px;
+    font-weight: 400;
+    user-select: none;
 }
 
 .student {
@@ -285,16 +306,6 @@ body {
     margin-top: 12px;
 }
 
-.row-letter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #c5cbd3;
-    font-size: 10px;
-    font-weight: 400;
-    user-select: none;
-}
-
 /* MOBILE */
 
 @media(max-width: 700px) {
@@ -315,11 +326,24 @@ body {
         gap: 5px;
     }
 
-    .student-row {
-        width: max-content;
-        flex: 0 0 auto;
+    .column-letters {
         grid-template-columns: 12px repeat(24, 34px) 12px;
         gap: 4px;
+    }
+
+    .student-row {
+        grid-template-columns: repeat(24, 34px);
+        gap: 4px;
+    }
+
+    .row-letter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #cbd1d8;
+        font-size: 9px;
+        font-weight: 400;
+        user-select: none;
     }
 
     .student {
@@ -340,16 +364,6 @@ body {
 
     .modal {
         padding: 18px;
-    }
-
-    .row-letter {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #cbd1d8;
-        font-size: 9px;
-        font-weight: 400;
-        user-select: none;
     }
 }
 
@@ -520,8 +534,8 @@ body {
 // CONFIGURATION
 // =================================
 
-const USERNAME = "Sataen Cheer";
-const PASSWORD = "Mvsataen Cheer";
+const USERNAME = "SataenCheer";
+const PASSWORD = "MvCheer";
 
 const TOTAL_STUDENTS = 240;
 const TOTAL_SPECIAL = 24;
@@ -595,27 +609,35 @@ function saveStorage() {
 function createStudents() {
 
     const grid = document.getElementById("studentGrid");
-
     grid.innerHTML = "";
 
-    // สร้างทั้งหมด 10 แถว
+    // ตัวอักษร A-X ด้านบน เรียงตาม 24 คอลัมน์
+    const topLetters = document.createElement("div");
+    topLetters.className = "column-letters";
+
+    const topLeftSpace = document.createElement("span");
+    topLetters.appendChild(topLeftSpace);
+
+    for (let col = 0; col < 24; col++) {
+        const letter = document.createElement("span");
+        letter.className = "row-letter";
+        letter.textContent = String.fromCharCode(65 + col);
+        topLetters.appendChild(letter);
+    }
+
+    const topRightSpace = document.createElement("span");
+    topLetters.appendChild(topRightSpace);
+    grid.appendChild(topLetters);
+
+    // สร้างนักเรียน 240 คน: 10 แถว x 24 คอลัมน์
     for (let row = 9; row >= 0; row--) {
 
         const rowElement = document.createElement("div");
         rowElement.className = "student-row";
 
-        // ตัวอักษรด้านซ้าย A-J
-        const leftLabel = document.createElement("span");
-        leftLabel.className = "row-letter";
-        leftLabel.textContent = String.fromCharCode(65 + (9 - row));
-
-        rowElement.appendChild(leftLabel);
-
-        // สร้างช่องนักเรียน 24 ช่อง
         for (let col = 0; col < 24; col++) {
 
             const number = row * 24 + col + 1;
-
             const square = document.createElement("div");
 
             square.className = "student";
@@ -629,15 +651,26 @@ function createStudents() {
             rowElement.appendChild(square);
         }
 
-        // ตัวอักษรด้านขวา K-T
-        const rightLabel = document.createElement("span");
-        rightLabel.className = "row-letter";
-        rightLabel.textContent = String.fromCharCode(75 + (9 - row));
-
-        rowElement.appendChild(rightLabel);
-
         grid.appendChild(rowElement);
     }
+
+    // ตัวอักษร A-X ด้านล่าง เรียงตรงกับด้านบน
+    const bottomLetters = document.createElement("div");
+    bottomLetters.className = "column-letters";
+
+    const bottomLeftSpace = document.createElement("span");
+    bottomLetters.appendChild(bottomLeftSpace);
+
+    for (let col = 0; col < 24; col++) {
+        const letter = document.createElement("span");
+        letter.className = "row-letter";
+        letter.textContent = String.fromCharCode(65 + col);
+        bottomLetters.appendChild(letter);
+    }
+
+    const bottomRightSpace = document.createElement("span");
+    bottomLetters.appendChild(bottomRightSpace);
+    grid.appendChild(bottomLetters);
 }
 
 // =================================
